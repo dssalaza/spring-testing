@@ -29,15 +29,15 @@ public class WeatherClientIntegrationTest {
 
     @Test
     public void shouldCallWeatherService() throws Exception {
-        wireMockRule.stubFor(get(urlPathEqualTo("/some-test-api-key/53.5511,9.9937"))
+        wireMockRule.stubFor(get(urlEqualTo("/data/2.5/weather?q=Hamburg,de&appid=someAppId"))
                 .willReturn(aResponse()
                         .withBody(FileLoader.read("classpath:weatherApiResponse.json"))
                         .withHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withStatus(200)));
 
-        Optional<WeatherResponse> weatherResponse = subject.fetchWeather();
+        var weatherResponse = subject.fetchWeather();
 
-        Optional<WeatherResponse> expectedResponse = Optional.of(new WeatherResponse("Rain"));
+        var expectedResponse = Optional.of(new WeatherResponse("raining", "a light drizzle"));
         assertThat(weatherResponse, is(expectedResponse));
     }
 }

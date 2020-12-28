@@ -31,24 +31,22 @@ public class WeatherClientTest {
 
     @Test
     public void shouldCallWeatherService() throws Exception {
-        WeatherResponse expectedResponse = new WeatherResponse("light rain");
-        given(restTemplate.getForObject("http://localhost:8089/someAppId/53.5511,9.9937", WeatherResponse.class))
+        var expectedResponse = new WeatherResponse("raining", "a light drizzle");
+        given(restTemplate.getForObject("http://localhost:8089/data/2.5/weather?q=Hamburg,de&appid=someAppId", WeatherResponse.class))
                 .willReturn(expectedResponse);
 
-        Optional<WeatherResponse> actualResponse = subject.fetchWeather();
+        var actualResponse = subject.fetchWeather();
 
         assertThat(actualResponse, is(Optional.of(expectedResponse)));
     }
 
     @Test
     public void shouldReturnEmptyOptionalIfWeatherServiceIsUnavailable() throws Exception {
-        given(restTemplate.getForObject("http://localhost:8089/someAppId/53.5511,9.9937", WeatherResponse.class))
+        given(restTemplate.getForObject("http://localhost:8089/data/2.5/weather?q=Hamburg,de&appid=someAppId", WeatherResponse.class))
                 .willThrow(new RestClientException("something went wrong"));
 
-        Optional<WeatherResponse> actualResponse = subject.fetchWeather();
+        var actualResponse = subject.fetchWeather();
 
         assertThat(actualResponse, is(Optional.empty()));
-
     }
-
 }
